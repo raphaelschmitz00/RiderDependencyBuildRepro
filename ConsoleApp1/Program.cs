@@ -1,3 +1,10 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿var filename = "myfile.txt.gen";
 
-Console.WriteLine("Hello, World!");
+if (File.Exists(filename) == false)
+{
+    Console.WriteLine("File not present!");
+    return;
+}
+
+var content = File.ReadAllText(filename);
+Console.WriteLine($"File content: {content}");

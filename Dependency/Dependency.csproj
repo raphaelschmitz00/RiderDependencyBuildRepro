@@ -6,4 +6,36 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+
+    <ItemGroup>
+        <None Remove="**/*.txt"/>
+        <MyItem Include="**/*.txt" Exclude="$(IntermediateOutputPath)**/*"/>
+        <UpToDateCheckInput Include="@(MyItem)"/>
+
+        <Content
+                Include="$(IntermediateOutputPath)MyItems/**/*.gen"
+                Link="%(RecursiveDir)%(Filename)%(Extension)"
+                CopyToOutputDirectory="Always"/>
+    </ItemGroup>
+
+    <Target
+            Name="MyTarget"
+            BeforeTargets="BeforeBuild"
+            Inputs="@(MyItem)"
+            Outputs="@(MyItem -> '$(IntermediateOutputPath)MyItems/%(Identity).spv')"
+    >
+        <Message Importance="high" Text="Detected .txt change in @(MyItem)"/>
+        <Copy SourceFiles="@(MyItem)" DestinationFiles="$(IntermediateOutputPath)MyItems/%(Identity).gen"/>
+    </Target>
+
+    <Target
+            Name="MyCleanTarget"
+            BeforeTargets="BeforeClean"
+            Inputs="@(MyItem)"
+            Outputs="@(MyItem -> '$(IntermediateOutputPath)MyItems/%(Identity).spv')"
+    >
+        <RemoveDir Directories="$(IntermediateOutputPath)MyItems"/>
+    </Target>
+    
+
 </Project>
